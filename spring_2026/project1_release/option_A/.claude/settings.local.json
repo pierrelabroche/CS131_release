@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:www.sciencedirect.com)",
+      "WebFetch(domain:www.geeksforgeeks.org)",
+      "WebFetch(domain:www.youtube.com)",
+      "WebFetch(domain:doi.org)",
+      "Bash(python3 *)",
+      "Bash(pdftoppm --version)",
+      "Bash(pdftoppm -r 150 /Users/pierrelabroche/CS131_release/spring_2026/project1_release/option_A/option_a_exploration.pdf /tmp/exploration_page)",
+      "Read(//private/tmp/**)",
+      "Bash(pdftoppm -r 100 /Users/pierrelabroche/CS131_release/spring_2026/project1_release/option_A/option_a_exploration.pdf /tmp/explo_page)"
+    ]
+  }
+}

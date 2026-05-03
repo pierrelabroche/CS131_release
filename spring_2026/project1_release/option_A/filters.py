@@ -29,7 +29,17 @@ def conv_nested(image, kernel):
     out = np.zeros((Hi, Wi))
 
     ### YOUR CODE HERE
-    pass
+    offset_hk = Hk // 2
+    offset_wk = Wk // 2
+
+    for m in range(Hi):
+      for n in range(Wi):
+        for l in range(Hk):
+          for k in range(Wk):
+            img_l = m - l + offset_hk
+            img_k = n - k + offset_wk
+            if 0 <= img_l < Hi and 0 <= img_k < Wi:
+              out[m][n] += kernel[l][k] * image[img_l][img_k]
     ### END YOUR CODE
 
     return out
@@ -56,7 +66,7 @@ def zero_pad(image, pad_height, pad_width):
     out = None
 
     ### YOUR CODE HERE
-    pass
+    out = np.pad(image, ((pad_height, pad_height), (pad_width, pad_width)), mode='constant', constant_values=0)
     ### END YOUR CODE
     return out
 
@@ -85,7 +95,11 @@ def conv_fast(image, kernel):
     out = np.zeros((Hi, Wi))
 
     ### YOUR CODE HERE
-    pass
+    image = zero_pad(image, Hk // 2, Wk // 2)
+    kernel = np.flip(kernel)
+    for m in range(Hi):
+        for n in range(Wi):
+            out[m][n] = np.sum(image[m:m+Hk, n:n+Wk] * kernel)
     ### END YOUR CODE
 
     return out
@@ -105,7 +119,7 @@ def cross_correlation(f, g):
 
     out = None
     ### YOUR CODE HERE
-    pass
+    out = conv_fast(f, np.flip(g))
     ### END YOUR CODE
 
     return out
@@ -127,7 +141,8 @@ def zero_mean_cross_correlation(f, g):
 
     out = None
     ### YOUR CODE HERE
-    pass
+    g = g - np.mean(g)
+    out = conv_fast(f, np.flip(g))
     ### END YOUR CODE
 
     return out
@@ -151,7 +166,17 @@ def normalized_cross_correlation(f, g):
 
     out = None
     ### YOUR CODE HERE
-    pass
+    Hf, Wf = f.shape
+    Hg, Wg = g.shape
+    out = np.zeros((Hf, Wf))
+    g_normalized = (g - np.mean(g)) / np.std(g) if np.std(g) > 0 else g - np.mean(g)
+    f_padded = zero_pad(f, Hg // 2, Wg // 2)
+
+    for m in range(Hf):
+        for n in range(Wf):
+            f_sub = f_padded[m:m+Hg, n:n+Wg]
+            f_sub_normalized = (f_sub - np.mean(f_sub)) / np.std(f_sub) if np.std(f_sub) > 0 else f_sub - np.mean(f_sub)
+            out[m][n] = np.sum(f_sub_normalized * g_normalized)
     ### END YOUR CODE
 
     return out
